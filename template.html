@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<title>__TITLE__・角色出場劇情畫面</title>
+<style>
+  :root{
+    --bg:#0b1410; --panel:#111d17; --panel2:#18281f;
+    --gold:__THEME__;--theme:__THEME__; --gold-dim:#3f8a5c;
+    --text:#e3efe7; --muted:#8fa99a; --border:#25402f;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; background:var(--bg); color:var(--text);
+    font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;
+    line-height:1.7;
+  }
+  header{
+    text-align:center; padding:2.2rem 1rem 1.4rem;
+    background:radial-gradient(ellipse at 50% 0%, #143a24 0%, var(--bg) 70%);
+    border-bottom:1px solid var(--border);
+  }
+  header h1{
+    margin:0 0 .4rem; font-size:1.9rem; letter-spacing:.12em; color:var(--gold);
+    font-family:Georgia,"Noto Serif TC","PMingLiU",serif;
+  }
+  header p{margin:.3rem auto; max-width:640px; color:var(--muted); font-size:.95rem}
+  .steam-btn{
+    display:inline-block; margin-top:.9rem; padding:.55rem 1.4rem;
+    background:var(--gold); color:#06140b; text-decoration:none; font-weight:700;
+    border-radius:6px; letter-spacing:.05em;
+  }
+  .steam-btn:hover{background:#86e3a8}
+  .layout{display:flex; max-width:1200px; margin:0 auto; align-items:flex-start}
+  nav#sidebar{
+    width:250px; flex-shrink:0; position:sticky; top:0; max-height:100vh; overflow-y:auto;
+    padding:1.2rem .8rem; border-right:1px solid var(--border); background:var(--panel);
+  }
+  nav#sidebar h2{font-size:.85rem; color:var(--muted); letter-spacing:.2em; margin:0 0 .6rem .4rem; font-weight:400}
+  nav#sidebar a{
+    display:block; padding:.6rem .8rem; margin:.15rem 0; color:var(--text); text-decoration:none;
+    border-left:3px solid transparent; border-radius:0 6px 6px 0; font-size:.98rem;
+  }
+  nav#sidebar a small{color:var(--muted); font-size:.78rem; display:block}
+  nav#sidebar a:hover{background:var(--panel2)}
+  nav#sidebar a.active{background:var(--panel2); border-left-color:var(--gold); color:var(--gold)}
+  nav#sidebar a.active small{color:var(--gold-dim)}
+  main{flex:1; min-width:0; padding:1.6rem 2rem 3rem; max-width:960px}
+  .char-head{border-bottom:1px solid var(--border); padding-bottom:1rem; margin-bottom:1.6rem}
+  .char-head h2{margin:0; font-size:1.7rem; color:var(--gold); font-family:Georgia,"Noto Serif TC","PMingLiU",serif; letter-spacing:.06em}
+  .char-head .en{color:var(--muted); font-size:.95rem; letter-spacing:.08em}
+  .char-head .intro{margin:.7rem 0 0; color:var(--text); font-size:1rem}
+  .scene-count{color:var(--muted); font-size:.85rem; margin-top:.4rem}
+  figure.scene{
+    margin:0 0 2.6rem; background:var(--panel); border:1px solid var(--border);
+    border-radius:10px; overflow:hidden;
+  }
+  figure.scene img{display:block; width:100%; height:auto; cursor:zoom-in; background:#000}
+  figure.scene figcaption{
+    padding:.8rem 1.1rem; font-size:.95rem; color:var(--text);
+    border-top:1px solid var(--border);
+  }
+  figure.scene figcaption .no{
+    display:inline-block; min-width:1.7em; text-align:center; margin-right:.6em;
+    background:var(--gold); color:#06140b; border-radius:4px; font-weight:700; font-size:.85em; padding:.1em .3em;
+  }
+  footer{
+    text-align:center; padding:2rem 1rem 2.6rem; color:var(--muted); font-size:.85rem;
+    border-top:1px solid var(--border); max-width:1200px; margin:0 auto;
+  }
+  footer a{color:var(--gold)}
+  #lightbox{
+    position:fixed; inset:0; background:rgba(3,8,5,.94); z-index:50;
+    display:flex; flex-direction:column; align-items:center; justify-content:center; padding:2rem;
+  }
+  #lightbox.hidden{display:none}
+  #lightbox img{max-width:92vw; max-height:78vh; border:1px solid var(--border); border-radius:8px}
+  #lightbox .lb-cap{margin-top:.9rem; color:var(--text); max-width:800px; text-align:center}
+  #lightbox button{
+    position:absolute; background:rgba(0,0,0,.5); color:var(--gold); border:1px solid var(--border);
+    font-size:1.4rem; width:2.6rem; height:2.6rem; border-radius:50%; cursor:pointer;
+  }
+  #lightbox button:hover{background:var(--gold); color:#06140b}
+  #lb-close{top:1rem; right:1.2rem}
+  #lb-prev{left:1rem; top:50%; transform:translateY(-50%)}
+  #lb-next{right:1rem; top:50%; transform:translateY(-50%)}
+  @media (max-width:860px){
+    .layout{flex-direction:column}
+    nav#sidebar{
+      width:100%; position:static; max-height:none; border-right:none; border-bottom:1px solid var(--border);
+      display:flex; overflow-x:auto; gap:.3rem; padding:.7rem;
+    }
+    nav#sidebar h2{display:none}
+    nav#sidebar a{white-space:nowrap; border-left:none; border-bottom:3px solid transparent; border-radius:6px 6px 0 0}
+    nav#sidebar a small{display:none}
+    nav#sidebar a.active{border-bottom-color:var(--gold)}
+    main{padding:1.2rem 1rem 2.5rem}
+    header h1{font-size:1.5rem}
+  }
+  #q{width:100%;margin:0 0 .6rem;padding:.5rem .7rem;background:var(--bg);border:1px solid var(--border);border-radius:6px;color:var(--text);font:inherit;font-size:.9rem}
+  .arc{color:var(--theme);font-weight:700}.rng{color:var(--muted);font-size:.82rem;display:block}
+  .src{font-size:.85rem}.src a{color:var(--gold)}
+  @media (max-width:860px){#q{display:none}}
+</style>
+</head>
+<body>
+<header>
+  <h1>__TITLE__・角色出場劇情畫面</h1>
+  <p>每個角色依時間順序列出主要出場劇情畫面與篇章、話數／集數（圖片與圖說來源：__WIKI__.fandom.com 角色頁）。點左側角色切換，點圖放大。</p>
+</header>
+<div class="layout">
+  <nav id="sidebar" aria-label="角色選單"><h2>角色</h2><input id="q" type="search" placeholder="搜尋角色…"><div id="list"></div></nav>
+  <main id="content"></main>
+</div>
+<footer>資料與圖片來源：<a href="https://__WIKI__.fandom.com/" target="_blank" rel="noopener">__WIKI__ Fandom Wiki</a>（CC BY-SA）、中文簡介取自其中文分站。作品版權屬原作者與出版社，本頁為粉絲整理，僅供個人對照。</footer>
+<div id="lightbox" class="hidden" role="dialog"><button id="lb-close">✕</button><button id="lb-prev">‹</button><img id="lb-img" alt="" referrerpolicy="no-referrer"><div class="lb-cap" id="lb-cap"></div><button id="lb-next">›</button></div>
+<script>
+const CHARACTERS = __DATA__;
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const list=document.getElementById('list'),main=document.getElementById('content');
+let cur=0,lb=0;
+function nav(f=''){list.innerHTML='';CHARACTERS.forEach((c,i)=>{if(f&&!(c.name+c.en).toLowerCase().includes(f))return;
+ const a=document.createElement('a');a.href='#'+c.id;a.className=i===cur?'active':'';a.innerHTML=esc(c.name)+'<small>'+esc(c.en)+'・'+c.scenes.length+' 場</small>';
+ a.onclick=e=>{e.preventDefault();cur=i;history.replaceState(null,'','#'+c.id);nav(f);show();};list.appendChild(a);});}
+function cap(s){return '<span class="arc">'+esc(s.arc)+'</span>'+(s.range?'<span class="rng">'+esc(s.range)+'</span>':'')+esc(s.caption);}
+function show(){const c=CHARACTERS[cur];
+ main.innerHTML='<div class="char-head"><h2>'+esc(c.name)+'</h2><div class="en">'+esc(c.en)+'</div><p class="intro">'+esc(c.intro)+'</p><div class="scene-count">共 '+c.scenes.length+' 個出場畫面・<span class="src"><a href="'+c.src+'" target="_blank" rel="noopener">來源頁面</a></span></div></div>'+
+ c.scenes.map((s,i)=>'<figure class="scene"><img loading="lazy" referrerpolicy="no-referrer" src="'+esc(s.img)+'" alt="'+esc(s.caption)+'" data-i="'+i+'"><figcaption><span class="no">'+(i+1)+'</span>'+cap(s)+'</figcaption></figure>').join('');
+ main.querySelectorAll('figure img').forEach(im=>im.onclick=()=>openLb(+im.dataset.i));window.scrollTo({top:0});}
+const L=document.getElementById('lightbox');
+function openLb(i){const sc=CHARACTERS[cur].scenes;lb=(i+sc.length)%sc.length;document.getElementById('lb-img').src=sc[lb].img;document.getElementById('lb-cap').innerHTML=cap(sc[lb]);L.classList.remove('hidden');}
+document.getElementById('lb-close').onclick=()=>L.classList.add('hidden');
+document.getElementById('lb-prev').onclick=()=>openLb(lb-1);document.getElementById('lb-next').onclick=()=>openLb(lb+1);
+L.onclick=e=>{if(e.target===L)L.classList.add('hidden')};
+document.addEventListener('keydown',e=>{if(L.classList.contains('hidden'))return;if(e.key==='Escape')L.classList.add('hidden');if(e.key==='ArrowLeft')openLb(lb-1);if(e.key==='ArrowRight')openLb(lb+1);});
+document.getElementById('q').oninput=e=>nav(e.target.value.trim().toLowerCase());
+const h=location.hash.slice(1);const k=CHARACTERS.findIndex(c=>c.id===h);if(k>=0)cur=k;nav();show();
+</script>
+</body></html>
