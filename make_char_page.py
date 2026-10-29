@@ -122,7 +122,7 @@ def main():
         chars.append({'id': re.sub(r'\W+', '-', real.lower()), 'name': name, 'en': real, 'intro': intro,
                       'src': f'https://{a.wiki}.fandom.com/wiki/' + urllib.parse.quote(real.replace(' ', '_')), 'scenes': out})
         print(f'  ✓ {name} ({real}) {len(out)} 場', file=sys.stderr)
-    import os; os.makedirs(a.out, exist_ok=True)
+    os.makedirs(a.out, exist_ok=True)
     if a.download:  # Fandom 會擋外站引用圖片，下載縮成 720px 寬 JPEG 存在 images/
         from PIL import Image; import io, hashlib
         os.makedirs(os.path.join(a.out, 'images'), exist_ok=True)
