@@ -3,7 +3,7 @@
 用法: python3 make_char_page.py --wiki hunterxhunter --title "獵人 HUNTER×HUNTER" --chars chars.txt --out site/
 資料全部取自 Fandom 維基 (MediaWiki API)：角色頁 Plot 章節裡的劇情圖與圖說、各篇章頁的話數/集數、中文分站的簡介。
 """
-import argparse, json, re, sys, time, html, urllib.parse, urllib.request
+import argparse, os, json, re, sys, time, html, urllib.parse, urllib.request
 import mwparserfromhell as mwp
 import opencc
 T = opencc.OpenCC('s2twp')
@@ -43,6 +43,7 @@ def main():
     ap.add_argument('--chars', required=True, help='角色英文頁名清單檔，一行一個')
     ap.add_argument('--arcmap', default=None, help='JSON：篇章英文名→中文名')
     ap.add_argument('--zhnames', default=None, help='JSON：英文頁名→中文名（中文分站沒有該角色時用）')
+    ap.add_argument('--captions', default=None, help='JSON 翻譯檔：英文圖說→中文；"intro:頁名"→中文簡介')
     ap.add_argument('--max-scenes', type=int, default=6)
     ap.add_argument('--theme', default='#5fd38a')
     ap.add_argument('--download', action='store_true', help='把圖片下載到 images/（建議，Fandom 擋熱連結）')
@@ -53,6 +54,7 @@ def main():
     zhbase = a.zhwiki or f'https://{a.wiki}.fandom.com/zh/api.php'
     arcmap = json.load(open(a.arcmap, encoding='utf-8')) if a.arcmap else {}
     zhnames = json.load(open(a.zhnames, encoding='utf-8')) if a.zhnames else {}
+    zhcap = json.load(open(a.captions, encoding='utf-8')) if a.captions and os.path.exists(a.captions) else {}
     names = [l.strip() for l in open(a.chars, encoding='utf-8') if l.strip() and not l.startswith('#')]
     arc_cache, chars, gaps = {}, [], []
     for title in names:
@@ -78,6 +80,7 @@ def main():
             lead = re.sub(r'<ref[\s\S]*?(/>|</ref>)', '', str(lead))
             txt = plain(lead); m = re.match(r'(.+?\.)\s', txt + ' ')
             intro = (m.group(1) if m else txt)[:260]
+        if 'intro:' + real in zhcap: intro = zhcap['intro:' + real]
         # 劇情章節裡的圖
         scenes = []
         for sec in wt.get_sections(levels=[3]):
@@ -115,7 +118,7 @@ def main():
             u = norm.get(s['file'].replace('_', ' '))
             if not u: continue
             r = arc_cache.get(s['arc'], {})
-            out.append({'img': u, 'arc': arcmap.get(s['arc'], s['arc']), 'range': ' ｜ '.join(v for v in (r.get('chapters'), r.get('episodes')) if v), 'caption': s['en']})
+            out.append({'img': u, 'arc': arcmap.get(s['arc'], s['arc']), 'range': ' ｜ '.join(v for v in (r.get('chapters'), r.get('episodes')) if v), 'caption': zhcap.get(s['en'], s['en']), 'en': s['en'] if s['en'] in zhcap else ''})
         chars.append({'id': re.sub(r'\W+', '-', real.lower()), 'name': name, 'en': real, 'intro': intro,
                       'src': f'https://{a.wiki}.fandom.com/wiki/' + urllib.parse.quote(real.replace(' ', '_')), 'scenes': out})
         print(f'  ✓ {name} ({real}) {len(out)} 場', file=sys.stderr)

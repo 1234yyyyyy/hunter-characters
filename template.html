@@ -101,7 +101,7 @@
   }
   #q{width:100%;margin:0 0 .6rem;padding:.5rem .7rem;background:var(--bg);border:1px solid var(--border);border-radius:6px;color:var(--text);font:inherit;font-size:.9rem}
   .arc{color:var(--theme);font-weight:700}.rng{color:var(--muted);font-size:.82rem;display:block}
-  .src{font-size:.85rem}.src a{color:var(--gold)}
+  .encap{display:block;color:var(--muted);font-size:.78rem;font-style:italic}.src{font-size:.85rem}.src a{color:var(--gold)}
   @media (max-width:860px){#q{display:none}}
 </style>
 </head>
@@ -124,7 +124,7 @@ let cur=0,lb=0;
 function nav(f=''){list.innerHTML='';CHARACTERS.forEach((c,i)=>{if(f&&!(c.name+c.en).toLowerCase().includes(f))return;
  const a=document.createElement('a');a.href='#'+c.id;a.className=i===cur?'active':'';a.innerHTML=esc(c.name)+'<small>'+esc(c.en)+'・'+c.scenes.length+' 場</small>';
  a.onclick=e=>{e.preventDefault();cur=i;history.replaceState(null,'','#'+c.id);nav(f);show();};list.appendChild(a);});}
-function cap(s){return '<span class="arc">'+esc(s.arc)+'</span>'+(s.range?'<span class="rng">'+esc(s.range)+'</span>':'')+esc(s.caption);}
+function cap(s){return '<span class="arc">'+esc(s.arc)+'</span>'+(s.range?'<span class="rng">'+esc(s.range)+'</span>':'')+esc(s.caption)+(s.en?'<span class="encap">'+esc(s.en)+'</span>':'');}
 function show(){const c=CHARACTERS[cur];
  main.innerHTML='<div class="char-head"><h2>'+esc(c.name)+'</h2><div class="en">'+esc(c.en)+'</div><p class="intro">'+esc(c.intro)+'</p><div class="scene-count">共 '+c.scenes.length+' 個出場畫面・<span class="src"><a href="'+c.src+'" target="_blank" rel="noopener">來源頁面</a></span></div></div>'+
  c.scenes.map((s,i)=>'<figure class="scene"><img loading="lazy" referrerpolicy="no-referrer" src="'+esc(s.img)+'" alt="'+esc(s.caption)+'" data-i="'+i+'"><figcaption><span class="no">'+(i+1)+'</span>'+cap(s)+'</figcaption></figure>').join('');
